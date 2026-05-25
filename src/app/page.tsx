@@ -136,7 +136,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <div className="relative min-h-screen w-full overflow-hidden flex flex-col">
       <div
         className="pointer-events-none fixed inset-0 z-0 select-none transition-opacity duration-300"
         style={{
@@ -167,7 +167,7 @@ export default function Home() {
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
             <a
-              href="https://github.com"
+              href="https://github.com/prateeksingh9464"
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-all hover:scale-105"
@@ -180,7 +180,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 flex-1 w-full">
         <section className="text-center mb-16">
           <h1 className="bg-gradient-to-r from-purple-400 via-sky-400 to-indigo-500 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-6xl">
             Distill the Web
@@ -190,97 +190,102 @@ export default function Home() {
           </p>
         </section>
 
-        <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="glass-card glass-card-glow lg:col-span-2 rounded-2xl p-6 shadow-xl">
-            <div className="flex border-b border-border mb-6">
-              <button
-                onClick={() => setActiveTab("url")}
-                className={`flex items-center space-x-2 pb-3 px-4 font-semibold transition-all ${
-                  activeTab === "url"
-                    ? "border-b-2 border-purple-500 text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Link2 className="h-4 w-4" />
-                <span>Paste URL</span>
-              </button>
-              <button
-                onClick={() => setActiveTab("text")}
-                className={`flex items-center space-x-2 pb-3 px-4 font-semibold transition-all ${
-                  activeTab === "text"
-                    ? "border-b-2 border-purple-500 text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <FileText className="h-4 w-4" />
-                <span>Raw Text</span>
-              </button>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+          {/* Left Column: Form & Config & Status */}
+          <div className="space-y-6 lg:col-span-5">
+            {/* Input Card */}
+            <div className="glass-card glass-card-glow rounded-2xl p-6 shadow-xl">
+              <div className="flex border-b border-border mb-6">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("url")}
+                  className={`flex items-center space-x-2 pb-3 px-4 font-semibold transition-all cursor-pointer ${
+                    activeTab === "url"
+                      ? "border-b-2 border-purple-500 text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Link2 className="h-4 w-4" />
+                  <span>Paste URL</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("text")}
+                  className={`flex items-center space-x-2 pb-3 px-4 font-semibold transition-all cursor-pointer ${
+                    activeTab === "text"
+                      ? "border-b-2 border-purple-500 text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>Raw Text</span>
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <AnimatePresence mode="wait">
+                  {activeTab === "url" ? (
+                    <motion.div
+                      key="url"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <label className="block text-sm font-medium mb-2 text-muted-foreground">
+                        Article URL
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="https://example.com/blog/great-article"
+                        value={urlInput}
+                        onChange={(e) => setUrlInput(e.target.value)}
+                        className="w-full rounded-xl border border-border bg-background/50 px-4 py-3 outline-none transition-all focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                      />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="text"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <label className="block text-sm font-medium mb-2 text-muted-foreground">
+                        Source Text
+                      </label>
+                      <textarea
+                        placeholder="Paste your content here to summarize..."
+                        value={rawText}
+                        onChange={(e) => setRawText(e.target.value)}
+                        rows={8}
+                        className="w-full rounded-xl border border-border bg-background/50 px-4 py-3 outline-none transition-all focus:border-purple-500 focus:ring-1 focus:ring-purple-500 resize-y"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="relative flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 py-3.5 px-6 font-semibold text-white transition-all hover:opacity-95 focus:outline-none disabled:opacity-50 group hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-purple-500/10 cursor-pointer"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      <span>Processing Content...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-5 w-5 text-purple-200 group-hover:animate-pulse" />
+                      <span>Generate Summary</span>
+                    </>
+                  )}
+                </button>
+              </form>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <AnimatePresence mode="wait">
-                {activeTab === "url" ? (
-                  <motion.div
-                    key="url"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <label className="block text-sm font-medium mb-2 text-muted-foreground">
-                      Article URL
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="https://example.com/blog/great-article"
-                      value={urlInput}
-                      onChange={(e) => setUrlInput(e.target.value)}
-                      className="w-full rounded-xl border border-border bg-background/50 px-4 py-3 outline-none transition-all focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="text"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <label className="block text-sm font-medium mb-2 text-muted-foreground">
-                      Source Text
-                    </label>
-                    <textarea
-                      placeholder="Paste your content here to summarize..."
-                      value={rawText}
-                      onChange={(e) => setRawText(e.target.value)}
-                      rows={8}
-                      className="w-full rounded-xl border border-border bg-background/50 px-4 py-3 outline-none transition-all focus:border-purple-500 focus:ring-1 focus:ring-purple-500 resize-y"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="relative flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 py-3.5 px-6 font-semibold text-white transition-all hover:opacity-95 focus:outline-none disabled:opacity-50 group hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-purple-500/10 cursor-pointer"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    <span>Processing Content...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="mr-2 h-5 w-5 text-purple-200 group-hover:animate-pulse" />
-                    <span>Generate Summary</span>
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-
-          <div className="space-y-6">
+            {/* Configuration Card */}
             <div className="glass-card glass-card-glow rounded-2xl p-6 shadow-xl">
               <h3 className="flex items-center space-x-2 text-sm font-semibold tracking-wide uppercase text-muted-foreground mb-4">
                 <Sparkles className="h-4 w-4 text-purple-400" />
@@ -334,6 +339,7 @@ export default function Home() {
               </div>
             </div>
 
+            {/* System Status Card */}
             <div className="glass-card glass-card-glow rounded-2xl p-6 shadow-xl">
               <h3 className="flex items-center space-x-2 text-sm font-semibold tracking-wide uppercase text-muted-foreground mb-4">
                 <KeyRound className="h-4 w-4 text-sky-400" />
@@ -375,50 +381,89 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
 
-        <AnimatePresence>
-          {completion && (
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.3 }}
-              className="mt-8"
-            >
-              <div className="glass-card glass-card-glow rounded-2xl p-6 shadow-xl">
-                <div className="flex flex-wrap items-center justify-between border-b border-border pb-4 mb-6 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Sparkles className="h-5 w-5 text-purple-400 animate-pulse" />
-                    <h2 className="text-lg font-bold">Generated Summary</h2>
+          {/* Right Column: Output Summary or Awaiting Input Placeholder */}
+          <div className="lg:col-span-7">
+            <AnimatePresence mode="wait">
+              {completion ? (
+                <motion.div
+                  key="summary-container"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.3 }}
+                  className="glass-card glass-card-glow rounded-2xl p-6 shadow-xl h-full flex flex-col min-h-[500px]"
+                >
+                  <div className="flex flex-wrap items-center justify-between border-b border-border pb-4 mb-6 gap-4">
+                    <div className="flex items-center space-x-2">
+                      <Sparkles className="h-5 w-5 text-purple-400 animate-pulse" />
+                      <h2 className="text-lg font-bold">Generated Summary</h2>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={copyToClipboard}
+                        className="flex items-center space-x-2 rounded-lg border border-border bg-background/50 px-3.5 py-2 text-sm font-medium transition-all hover:scale-105 cursor-pointer text-foreground hover:bg-background"
+                      >
+                        <Clipboard className="h-4 w-4" />
+                        <span>Copy</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={downloadSummary}
+                        className="flex items-center space-x-2 rounded-lg border border-border bg-background/50 px-3.5 py-2 text-sm font-medium transition-all hover:scale-105 cursor-pointer text-foreground hover:bg-background"
+                      >
+                        <Download className="h-4 w-4" />
+                        <span>Download .txt</span>
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={copyToClipboard}
-                      className="flex items-center space-x-2 rounded-lg border border-border bg-background/50 px-3.5 py-2 text-sm font-medium transition-all hover:scale-105 cursor-pointer text-foreground hover:bg-background"
-                    >
-                      <Clipboard className="h-4 w-4" />
-                      <span>Copy</span>
-                    </button>
-                    <button
-                      onClick={downloadSummary}
-                      className="flex items-center space-x-2 rounded-lg border border-border bg-background/50 px-3.5 py-2 text-sm font-medium transition-all hover:scale-105 cursor-pointer text-foreground hover:bg-background"
-                    >
-                      <Download className="h-4 w-4" />
-                      <span>Download .txt</span>
-                    </button>
+                  <div className="prose prose-slate dark:prose-invert max-w-none flex-1 overflow-y-auto">
+                    <ReactMarkdown>{completion}</ReactMarkdown>
                   </div>
-                </div>
-
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <ReactMarkdown>{completion}</ReactMarkdown>
-                </div>
-              </div>
-            </motion.section>
-          )}
-        </AnimatePresence>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="placeholder-container"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="glass-card glass-card-glow rounded-2xl p-8 shadow-xl h-full flex flex-col items-center justify-center text-center min-h-[350px] lg:min-h-[500px]"
+                >
+                  <div className="relative mb-6">
+                    <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-xl animate-pulse" />
+                    <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30">
+                      <Sparkles className="h-8 w-8 text-purple-400" />
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Awaiting Content</h3>
+                  <p className="text-muted-foreground max-w-sm text-sm">
+                    Enter an article URL or paste some raw text on the left, then click "Generate Summary" to view the distilled results here.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </main>
+
+      <footer className="relative z-10 border-t border-border bg-background/30 py-8 backdrop-blur-md mt-auto">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <p className="text-sm text-muted-foreground">
+            Made with <span className="text-red-500 animate-pulse inline-block mx-1">❤️</span> by{" "}
+            <a
+              href="https://github.com/prateeksingh9464"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-foreground hover:text-purple-400 transition-colors underline decoration-purple-500/30 underline-offset-4"
+            >
+              Prateek
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
