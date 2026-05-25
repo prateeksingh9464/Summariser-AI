@@ -13,10 +13,7 @@ import {
   Download,
   Moon,
   Sun,
-  Loader2,
-  KeyRound,
-  CheckCircle2,
-  AlertCircle
+  Loader2
 } from "lucide-react";
 
 export default function Home() {
@@ -27,7 +24,6 @@ export default function Home() {
   const [length, setLength] = useState<"brief" | "balanced" | "detailed">("balanced");
   const [tone, setTone] = useState<"technical" | "explanatory" | "actionable">("actionable");
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
-  const [apiStatus, setApiStatus] = useState({ google: false, jina: false });
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -38,19 +34,6 @@ export default function Home() {
       setTheme("dark");
       document.documentElement.classList.remove("light");
     }
-
-    const checkStatus = async () => {
-      try {
-        const res = await fetch("/api/status");
-        if (res.ok) {
-          const data = await res.json();
-          setApiStatus({ google: data.googleConfigured, jina: data.jinaConfigured });
-        }
-      } catch {
-        setApiStatus({ google: false, jina: false });
-      }
-    };
-    checkStatus();
   }, []);
 
   useEffect(() => {
@@ -166,16 +149,6 @@ export default function Home() {
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
-            <a
-              href="https://github.com/prateeksingh9464"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-all hover:scale-105"
-            >
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
-              </svg>
-            </a>
           </div>
         </div>
       </header>
@@ -339,47 +312,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* System Status Card */}
-            <div className="glass-card glass-card-glow rounded-2xl p-6 shadow-xl">
-              <h3 className="flex items-center space-x-2 text-sm font-semibold tracking-wide uppercase text-muted-foreground mb-4">
-                <KeyRound className="h-4 w-4 text-sky-400" />
-                <span>System Status</span>
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Gemini API Key</span>
-                  <div className="flex items-center space-x-1.5">
-                    {apiStatus.google ? (
-                      <>
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                        <span className="text-emerald-400 font-medium text-xs">Connected</span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="h-4 w-4 text-amber-500" />
-                        <span className="text-amber-500 font-medium text-xs">Unset (Local env)</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Jina Reader API</span>
-                  <div className="flex items-center space-x-1.5">
-                    {apiStatus.jina ? (
-                      <>
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                        <span className="text-emerald-400 font-medium text-xs">Auth Connected</span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="h-4 w-4 text-sky-400" />
-                        <span className="text-sky-400 font-medium text-xs">Free Tier</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right Column: Output Summary or Awaiting Input Placeholder */}
